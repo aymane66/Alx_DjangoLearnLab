@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
+
 # Create your models here.
 
 class Book(models.Model):
@@ -10,25 +11,16 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     publication_year = models.IntegerField(default=1900)
 
+    class Meta:
+        permissions = [
+            ("can_view", "Can view book"),
+            ("can_create", "Can create book"),
+            ("can_edit", "Can edit book"),
+            ("can_delete", "Can delete book"),
+        ]
+
     def __str__(self):
         return f"{self.title} by {self.author} ({self.publication_year})"
-    
-
-class CustomUser(AbstractUser):
-    username = None 
-    email = models.EmailField(_('email address'), unique=True)
-    date_of_birth = models.DateField(null=True, blank=True)
-    profile_photo = models.ImageField(upload_to='profiles/', null=True, blank=True)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['date_of_birth']
-
-    objects = CustomUserManager()
-
-    class Meta:
-        verbose_name = 'user'
-        verbose_name_plural = 'users'
-
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password=None, **extra_fields):
@@ -50,3 +42,19 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self.create_user(email, date_of_birth, password, **extra_fields)
+
+
+class CustomUser(AbstractUser):
+    username = None 
+    email = models.EmailField(_('email address'), unique=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    profile_photo = models.ImageField(upload_to='profiles/', null=True, blank=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['date_of_birth']
+
+    objects = CustomUserManager()
+
+    class Meta:
+        verbose_name = 'user'
+        verbose_name_plural = 'users'
