@@ -13,7 +13,6 @@ admin.site.register(Book, BookAdmin)
 
 
 
-@admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ['email', 'date_of_birth', 'is_staff']
@@ -28,3 +27,6 @@ class CustomUserAdmin(UserAdmin):
     )
 
     search_fields = ['email']
+
+
+admin.site.register(CustomUser, CustomUserAdmin)
