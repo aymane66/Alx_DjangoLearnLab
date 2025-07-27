@@ -2,6 +2,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
+from .forms import BookForm, ExampleForm
+
 
 from .models import Book
 from .forms import BookSearchForm, BookForm
@@ -39,4 +41,12 @@ def book_create(request):
         form = BookForm()
     return render(request, 'bookshelf/book_form.html', {'form': form})
 
-# … similarly for edit / delete with get_object_or_404() and form.is_valid() …
+def example_form_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Handle form data (e.g., print, log, save, etc.)
+            return redirect('book_list')  # Or another success URL
+    else:
+        form = ExampleForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form})
