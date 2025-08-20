@@ -3,7 +3,6 @@
 <html>
 <head>
     <title>Django Blog</title>
-
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
@@ -17,8 +16,6 @@
         {% endif %}
     </nav>
     <hr>
-
-    {% block content %}
-    {% endblock %}
+    {% block content %}{% endblock %}
 </body>
 </html>
