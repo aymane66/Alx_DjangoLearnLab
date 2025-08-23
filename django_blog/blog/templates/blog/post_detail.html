@@ -9,5 +9,38 @@
     </div>
   </article>
 
+  <h2>Comments</h2>
+
+  <!-- Loop through existing comments -->
+  {% for comment in comments %}
+      <div style="margin-bottom: 1em; border-bottom: 1px solid #ccc; padding: 0.5em;">
+          <p><strong>{{ comment.author.username }}</strong> said:</p>
+          <p>{{ comment.content }}</p>
+          <small>Posted on {{ comment.created_at|date:"M d, Y H:i" }}</small>
+
+          {% if comment.author == user %}
+              <br>
+              <a href="{% url 'comment-edit' comment.pk %}">Edit</a> |
+              <a href="{% url 'comment-delete' comment.pk %}">Delete</a>
+          {% endif %}
+      </div>
+  {% empty %}
+      <p>No comments yet. Be the first to comment!</p>
+  {% endfor %}
+
+  <hr>
+
+  <!-- Add a new comment -->
+  {% if user.is_authenticated %}
+      <h3>Leave a Comment</h3>
+      <form method="post">
+          {% csrf_token %}
+          {{ comment_form.as_p }}
+          <button type="submit">Post Comment</button>
+      </form>
+  {% else %}
+      <p><a href="{% url 'login' %}">Login</a> to leave a comment.</p>
+  {% endif %}
+
   <a href="{% url 'post-list' %}">← Back to all posts</a>
 {% endblock %}
