@@ -187,14 +187,10 @@ class PostByTagListView(ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        self.tag = Tag.objects.get(slug=self.kwargs['slug'])
-        return (
-            Post.objects.filter(tags=self.tag)
-            .select_related('author')
-            .prefetch_related('tags')
-        )
+        self.tag = Tag.objects.get(slug=self.kwargs['tag_slug'])
+        return Post.objects.filter(tags=self.tag).select_related('author').prefetch_related('tags')
 
     def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['tag'] = self.tag
-        return ctx
+        context = super().get_context_data(**kwargs)
+        context['tag'] = self.tag
+        return context
