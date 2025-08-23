@@ -40,4 +40,16 @@
 
 
 
+
+<p>
+  Tags:
+  {% for tag in post.tags.all %}
+    <a href="{% url 'post-by-tag' tag.slug %}" style="margin-right:.5em;">#{{ tag.name }}</a>
+  {% empty %}
+    <em>No tags</em>
+  {% endfor %}
+</p>
+
+
+
 {% endblock %}

@@ -3,11 +3,12 @@ from django.contrib.auth import login
 from .forms import CustomUserCreationForm, UserUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from django.views.generic import ListView, DetailView, CreateView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .forms import CommentForm
+from django.db.models import Q
 
 
 def register(request):
@@ -147,3 +148,53 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return self.request.user == comment.author
+
+
+##
+
+
+
+class SearchResultsView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        q = (self.request.GET.get('q') or '').strip()
+        if not q:
+            return Post.objects.none()
+        return (
+            Post.objects.filter(
+                Q(title__icontains=q) |
+                Q(content__icontains=q) |
+                Q(tags__name__icontains=q)
+            )
+            .distinct()
+            .select_related('author')
+            .prefetch_related('tags')
+        )
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['query'] = self.request.GET.get('q', '')
+        return ctx
+
+
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_list_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        self.tag = Tag.objects.get(slug=self.kwargs['slug'])
+        return (
+            Post.objects.filter(tags=self.tag)
+            .select_related('author')
+            .prefetch_related('tags')
+        )
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['tag'] = self.tag
+        return ctx

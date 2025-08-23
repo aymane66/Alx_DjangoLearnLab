@@ -2,14 +2,21 @@
 
 {% block content %}
   <h2>All Blog Posts</h2>
-  <ul>
-    {% for post in posts %}
-      <li>
-        <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a> 
-        by {{ post.author.username }} ({{ post.created_at|date:"Y-m-d H:i" }})
-      </li>
-    {% empty %}
-      <li>No posts yet.</li>
-    {% endfor %}
+
+  {% for post in posts %}
+  <article>
+    <h3><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h3>
+    <p>{{ post.content|truncatewords:30 }}</p>
+    <p>
+      {% for tag in post.tags.all %}
+        <a href="{% url 'post-by-tag' tag.slug %}" style="margin-right:.5em;">#{{ tag.name }}</a>
+      {% empty %}
+        <span>No tags</span>
+      {% endfor %}
+    </p>
+  </article>
+
+{% endfor %}
+
   </ul>
 {% endblock %}
