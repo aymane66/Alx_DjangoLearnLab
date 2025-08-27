@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
         return self.username
 
 class Post(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='accounts_posts')
     title = models.CharField(max_length=255)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
