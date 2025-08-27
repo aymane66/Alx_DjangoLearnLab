@@ -3,7 +3,6 @@ from .models import Author, Book
 from datetime import date
 
 
-
 class BookSerializer(serializers.ModelSerializer):
     """
     Serializer for the Book model.

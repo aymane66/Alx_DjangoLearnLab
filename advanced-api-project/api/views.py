@@ -31,7 +31,6 @@ class BookListView(generics.ListAPIView):
     ordering = ['title']
 
 
-
 # DetailView: Retrieve a single book by ID
 class BookDetailView(generics.RetrieveAPIView):
     """

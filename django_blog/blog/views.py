@@ -180,7 +180,6 @@ class SearchResultsView(ListView):
         return ctx
 
 
-
 class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/post_list_by_tag.html'
