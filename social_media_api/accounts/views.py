@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from .models import CustomUser
 
 
 
@@ -44,8 +45,8 @@ class FollowUserView(APIView):
 
     def post(self, request, user_id):
         try:
-            target_user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
+            target_user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if target_user == request.user:
@@ -60,8 +61,8 @@ class UnfollowUserView(APIView):
 
     def post(self, request, user_id):
         try:
-            target_user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
+            target_user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         request.user.following.remove(target_user)
