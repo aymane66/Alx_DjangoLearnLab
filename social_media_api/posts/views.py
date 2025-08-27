@@ -3,6 +3,7 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -43,7 +44,7 @@ class FeedView(APIView):
 
     def get(self, request):
         user = request.user
-        followed_users = user.following.all()  # get users current user follows
-        posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+        following_users = user.following.all()
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
