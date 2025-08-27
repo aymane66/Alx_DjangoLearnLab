@@ -9,7 +9,6 @@ from rest_framework.authtoken.models import Token
 from .models import CustomUser
 
 
-
 User = get_user_model()
 
 class RegisterView(generics.CreateAPIView):
@@ -40,7 +39,8 @@ class ProfileView(APIView):
 
 
 
-class FollowUserView(APIView):
+
+class FollowUserView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, user_id):
@@ -56,7 +56,7 @@ class FollowUserView(APIView):
         return Response({"message": f"You are now following {target_user.username}"}, status=status.HTTP_200_OK)
 
 
-class UnfollowUserView(APIView):
+class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, user_id):
@@ -65,6 +65,8 @@ class UnfollowUserView(APIView):
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        if target_user == request.user:
+            return Response({"error": "You cannot unfollow yourself"}, status=status.HTTP_400_BAD_REQUEST)
+
         request.user.following.remove(target_user)
         return Response({"message": f"You unfollowed {target_user.username}"}, status=status.HTTP_200_OK)
-
