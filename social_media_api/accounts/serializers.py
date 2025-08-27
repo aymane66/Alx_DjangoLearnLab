@@ -40,4 +40,3 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.following.count()
     
 
-
